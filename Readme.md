@@ -95,19 +95,6 @@ poetry run sphinx-build -b singlehtml ./docs ./docs/_build
 poetry run pyreverse -o png src/
 ```
 
-## jupyter の起動
-いずれも localhost で起動する
-
-### jupyter notebook
-```
-poetry run jupyter notebook --allow-root
-```
-
-### jupyter lab
-```
-poetry run jupyter lab --allow-root
-```
-
 ---
 
 ## 仮想環境関連
