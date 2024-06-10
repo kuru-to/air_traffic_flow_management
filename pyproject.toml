@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "air_traffic_flow_management"
+version = "0.1.0"
+description = ""
+authors = []
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "src" }
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.11"
+julia = "^0.6.2"
+pydantic = "^2.6.4"
+docplex = "^2.25.236"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+pytest-cov = "^4.1.0"
+pulp = "^2.8.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

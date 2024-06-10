@@ -1,0 +1,10 @@
+{
+    "python.autoComplete.extraPaths": [
+        ".venv/lib/python3.10/site-packages",
+    ],
+    "python.testing.pytestArgs": [
+        "test"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+}
