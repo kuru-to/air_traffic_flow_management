@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pydantic import BaseModel, Field
 
 
@@ -16,3 +18,12 @@ class Time(BaseModel):
             int: 何コマ目か
         """
         return (self.hours * 60 + self.minutes) % time_step
+
+    def __lt__(self, other: Time) -> bool:
+        if self.hours != other.hours:
+            return self.hours < other.hours
+
+        if self.minutes != other.minutes:
+            return self.minutes < other.minutes
+
+        return self.seconds < other.seconds
