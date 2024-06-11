@@ -1,0 +1,22 @@
+from __future__ import annotations
+
+from pydantic import BaseModel
+
+from .flight import Flight
+from .sector import Sector
+from .time import Time
+
+
+class EnterEvent(BaseModel):
+    flight: Flight
+    sector: Sector
+    expected_time_over: Time
+
+    @classmethod
+    def create(
+        cls, flight_num: int, sector_name: str, expected_time_over: dict[str, int]
+    ) -> EnterEvent:
+        result = cls(
+            Flight(id_=flight_num), Sector(name=sector_name), Time(**expected_time_over)
+        )
+        return result

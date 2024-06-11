@@ -26,7 +26,7 @@ class Period(BaseModel):
         end_time: dict[str, int],
         rate: int,
     ) -> Period:
-        result = Period(
+        result = cls(
             sector=Sector(name=sector_name),
             start=Time(**start_time),
             end=Time(**end_time),
