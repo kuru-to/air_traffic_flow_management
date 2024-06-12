@@ -27,3 +27,9 @@ class Time(BaseModel):
             return self.minutes < other.minutes
 
         return self.seconds < other.seconds
+
+    def __sub__(self, other: Time) -> int:
+        dif_hours = self.hours - other.hours
+        dif_minutes = self.minutes - other.minutes
+        dif_seconds = self.seconds - other.seconds
+        return dif_hours * 60 * 60 + dif_minutes * 60 + dif_seconds

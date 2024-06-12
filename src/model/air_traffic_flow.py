@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
+from .enter_event import EnterEvent
 from .flight import Flight
 from .sector import Sector
 from .time import Time
@@ -22,3 +23,9 @@ class AirTrafficFlow(BaseModel):
             Flight(id_=flight_num), Sector(name=sector_name), Time(**enter_time)
         )
         return result
+
+    def delay(self, enter_event: EnterEvent) -> int:
+        """対応する進入イベントに対し, どれだけ遅れが生じたか"""
+        if self.flight != enter_event.flight or self.sector != enter_event.sector:
+            return 0
+        return max(0, self.enter_time - enter_event.expected_time_over)

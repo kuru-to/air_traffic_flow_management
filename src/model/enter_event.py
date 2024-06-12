@@ -17,6 +17,8 @@ class EnterEvent(BaseModel):
         cls, flight_num: int, sector_name: str, expected_time_over: dict[str, int]
     ) -> EnterEvent:
         result = cls(
-            Flight(id_=flight_num), Sector(name=sector_name), Time(**expected_time_over)
+            flight=Flight(id_=flight_num),
+            sector=Sector(name=sector_name),
+            expected_time_over=Time(**expected_time_over),
         )
         return result
