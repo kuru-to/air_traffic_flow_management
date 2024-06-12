@@ -17,66 +17,77 @@ class IAirTrafficFlowSchedulingModelBuilder(abc.ABC):
         """モデルをリセットし, 再度モデルを作り直せるようにする"""
         pass
 
-    def __init__(self):
-        self.reset_model()
-
-    @abc.abstractmethod
     def setup_vars(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
     ):
-        pass
+        for func_name in dir(self):
+            if func_name.startswith("_set_dvars_"):
+                eval(
+                    f"self.{func_name}(input_, parameters)",
+                    {},
+                    {"self": self, "input_": input_, "parameters": parameters},
+                )
 
-    @abc.abstractmethod
     def setup_constraints(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
     ):
-        pass
+        for func_name in dir(self):
+            if func_name.startswith("_add_constraints_"):
+                eval(
+                    f"self.{func_name}(input_, parameters)",
+                    {},
+                    {"self": self, "input_": input_, "parameters": parameters},
+                )
 
-    @abc.abstractmethod
     def setup_objective(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
     ):
-        pass
+        obj = 0
+        for func_name in dir(self):
+            if func_name.startswith("_get_objective_function_"):
+                obj += eval(
+                    f"self.{func_name}(input_, parameters)",
+                    {},
+                    {"self": self, "input_": input_, "parameters": parameters},
+                )
+
+        self.mdl.minimize(obj)
 
     def build(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
     ):
+        self.reset_model()
         self.setup_vars(input_, parameters)
         self.setup_constraints(input_, parameters)
         self.setup_objective(input_, parameters)
-        result = self.mdl
-        self.reset_model()
-        return result
+        return self.mdl
 
 
 class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBuilder):
     def reset_model(self):
+        # TODO: log の吐き出し先指定
         self.mdl = CpoModel("air traffic flow scheduler")
 
-    def setup_vars(
+    def _set_dvars_all(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
     ):
         # フライト毎の遅延分数
-        self.integer_var_delay = integer_var_dict(
-            keys=input_.flights,
-            min=0,
-            max=parameters.max_delay,
-        )
+        self.integer_var_delay = integer_var_dict(keys=input_.flights, min=0, max=parameters.max_delay, name="delay")
 
         # 各進入イベントにかかる時間
-        self.interval_var_event = interval_var_list(input_.num_enters, size=1)
+        self.interval_var_event = interval_var_list(input_.num_enters, size=1, name="interval_event")
 
-    def setup_constraints(
+    def _add_constraints_all(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
@@ -85,9 +96,7 @@ class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBui
         func_cum_by_sector: dict[Sector, CpoExpr] = {}
         for s in input_.sectors:
             func_cum_by_sector[s] = sum(
-                pulse(self.interval_var_event[i], 1)
-                for i, e in enumerate(input_.enter_events)
-                if e.sector == s
+                pulse(self.interval_var_event[i], 1) for i, e in enumerate(input_.enter_events) if e.sector == s
             )
 
         # 進入イベントの time step ごとの合計が容量率以内に収まる
@@ -97,12 +106,11 @@ class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBui
                     always_in(
                         func_cum_by_sector[s],
                         interval=(
-                            (p.start.hours * 60 + p.start.minutes)
-                            % parameters.time_step,
-                            (p.end.hours * 60 + p.end.minutes) % parameters.time_step,
+                            p.start.slot_number(parameters.time_step),
+                            p.end.slot_number(parameters.time_step),
                         ),
                         min=0,
-                        max=(p.rate * parameters.time_step + 59) % 60,
+                        max=(p.rate * parameters.time_step + 59) // 60,
                     )
                 )
 
@@ -111,16 +119,14 @@ class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBui
             self.mdl.add_constraint(
                 start_of(self.interval_var_event[i])
                 == int_div(
-                    self.integer_var_delay[e.flight]
-                    + e.expected_time_over.hours * 60
-                    + e.expected_time_over.minutes,
+                    self.integer_var_delay[e.flight] + e.expected_time_over.all_minutes,
                     parameters.time_step,
                 ),
             )
 
-    def setup_objective(
+    def _get_objective_function_delay(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
-    ):
-        self.mdl.minimize(sum(self.integer_var_delay[f] for f in input_.flights))
+    ) -> CpoExpr:
+        return sum(self.integer_var_delay[f] for f in input_.flights)

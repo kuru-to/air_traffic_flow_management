@@ -8,7 +8,12 @@ class Time(BaseModel):
     minutes: int = Field(..., ge=0, le=60)
     seconds: int = Field(..., ge=0, le=60)
 
-    def num_slot(self, time_step: int) -> int:
+    @property
+    def all_minutes(self) -> int:
+        """全て分換算した際の分数"""
+        return self.hours * 60 + self.minutes
+
+    def slot_number(self, time_step: int) -> int:
         """time step で考えたときに何コマ目にあたるのか
 
         Args:
@@ -17,7 +22,7 @@ class Time(BaseModel):
         Returns:
             int: 何コマ目か
         """
-        return (self.hours * 60 + self.minutes) % time_step
+        return self.all_minutes // time_step
 
     def __lt__(self, other: Time) -> bool:
         if self.hours != other.hours:

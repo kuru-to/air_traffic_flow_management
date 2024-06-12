@@ -21,7 +21,15 @@ docplex = "^2.25.236"
 pytest = "^8.1.1"
 pytest-cov = "^4.1.0"
 pulp = "^2.8.0"
+black = "^24.4.2"
+isort = "^5.13.2"
 
+[tool.black]
+line-length = 119
+
+[tool.isort]
+profile = "black"
+line_length = 119
 
 [build-system]
 requires = ["poetry-core"]
