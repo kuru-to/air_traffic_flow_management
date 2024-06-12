@@ -39,5 +39,5 @@ jobs:
         poetry run python -c "import julia; julia.install()"
     - name: Unitest with coverage
       run: |
-        poetry run pytest -v --cov=src/ -m 'not cplex'
+        poetry run pytest -v --cov=src/ -m 'not local_cplex'
         julia --project -e 'using Pkg;Pkg.test()'

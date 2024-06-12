@@ -1,3 +1,5 @@
+import pytest
+
 from src.model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
 from src.model.air_traffic_flow_scheduler.parameters import (
     AirTrafficFlowSchedulerParameters,
@@ -10,6 +12,7 @@ from src.model.period import Period
 from src.model.sector import Sector
 
 
+@pytest.mark.local_cplex
 def test_optimize():
     sector_name = "test_sector"
     input_ = AirTrafficFlowSchedulerInput(
