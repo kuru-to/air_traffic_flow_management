@@ -28,9 +28,7 @@ class AirTrafficFlowScheduler:
             var_sol = solution.get_var_solution(f"interval_event_{i}")
             enter_slot = var_sol.get_start()
             elapsed_minutes = enter_slot * parameters.time_step
-            enter_hour = elapsed_minutes // 60
-            enter_minute = elapsed_minutes % 60
-            enter_time = Time(hours=enter_hour, minutes=enter_minute, seconds=0)
+            enter_time = Time(hours=elapsed_minutes // 60, minutes=elapsed_minutes % 60, seconds=0)
 
             air_traffic_flows.append(
                 AirTrafficFlow(flight=enter_event.flight, sector=enter_event.sector, enter_time=enter_time)

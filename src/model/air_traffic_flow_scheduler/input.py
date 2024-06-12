@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from ..enter_event import EnterEvent
 from ..flight import Flight
@@ -10,6 +10,18 @@ class AirTrafficFlowSchedulerInput(BaseModel):
     sectors: list[Sector]
     periods: list[Period]
     enter_events: list[EnterEvent]
+
+    @model_validator(mode="after")
+    def validate_existing_sector(self):
+        for p in self.periods:
+            if p.sector not in set(self.sectors):
+                raise ValueError(f"Period's sector({p.sector}) does not exist in sectors.")
+
+        for e in self.enter_events:
+            if e.sector not in set(self.sectors):
+                raise ValueError(f"EnterEvent's sector({p.sector}) does not exist in sectors.")
+
+        return self
 
     @property
     def num_enters(self) -> int:
