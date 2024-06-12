@@ -6,6 +6,7 @@ from pydantic import BaseModel, field_validator
 class AirTrafficFlowSchedulerParameters(BaseModel):
     max_delay: int = 120
     time_step: int = 10
+    interval_size: int = 1
     cplex_faillimit: int = 20000
 
     @field_validator("time_step")

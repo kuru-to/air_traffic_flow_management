@@ -2,36 +2,34 @@ import pytest
 
 from src.model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
 from src.model.air_traffic_flow_scheduler.parameters import AirTrafficFlowSchedulerParameters
+from src.model.air_traffic_flow_scheduler.scheduler import AirTrafficFlowScheduler
 from src.model.air_traffic_flow_scheduler.scheduling_model_builder import AirTrafficFlowSchedulingModelBuilderImpl
 from src.model.enter_event import EnterEvent
 from src.model.period import Period
 from src.model.sector import Sector
-from src.utils.config_util import read_config, test_section
 
-config_path_name = read_config(section=test_section)
+sector_name = "test_sector"
+input_ = AirTrafficFlowSchedulerInput(
+    sectors=[Sector(name=sector_name)],
+    periods=[
+        Period.create(
+            sector_name,
+            {"hours": 0, "minutes": 0, "seconds": 0},
+            {"hours": 0, "minutes": 30, "seconds": 0},
+            30,
+        )
+    ],
+    enter_events=[
+        EnterEvent.create(1, sector_name, {"hours": 0, "minutes": 10, "seconds": 0}),
+        EnterEvent.create(2, sector_name, {"hours": 0, "minutes": 20, "seconds": 0}),
+    ],
+)
+parameters = AirTrafficFlowSchedulerParameters()
+model_builder = AirTrafficFlowSchedulingModelBuilderImpl()
 
 
 @pytest.mark.local_cplex
 def test_optimize():
-    sector_name = "test_sector"
-    input_ = AirTrafficFlowSchedulerInput(
-        sectors=[Sector(name=sector_name)],
-        periods=[
-            Period.create(
-                sector_name,
-                {"hours": 0, "minutes": 0, "seconds": 0},
-                {"hours": 0, "minutes": 30, "seconds": 0},
-                30,
-            )
-        ],
-        enter_events=[
-            EnterEvent.create(1, sector_name, {"hours": 0, "minutes": 10, "seconds": 0}),
-            EnterEvent.create(2, sector_name, {"hours": 0, "minutes": 20, "seconds": 0}),
-        ],
-    )
-    parameters = AirTrafficFlowSchedulerParameters()
-
-    model_builder = AirTrafficFlowSchedulingModelBuilderImpl()
     model = model_builder.build(input_, parameters)
     solution = model.solve()
 
@@ -43,3 +41,30 @@ def test_optimize():
     for i, _ in enumerate(input_.flights):
         delay_sol = solution.get_var_solution(f"delay_{i}")
         assert delay_sol.get_value() == 0
+
+
+@pytest.mark.local_cplex
+def test_scheduler_run():
+    model_output = AirTrafficFlowScheduler().run(input_, parameters, model_builder)
+    assert model_output.total_delay == 0
+
+
+@pytest.mark.local_cplex
+def _test_output_infeasible_case():
+    input_ = AirTrafficFlowSchedulerInput(
+        sectors=[Sector(name=sector_name)],
+        periods=[
+            Period.create(
+                sector_name,
+                {"hours": 0, "minutes": 0, "seconds": 0},
+                {"hours": 0, "minutes": 10, "seconds": 0},
+                1,
+            )
+        ],
+        enter_events=[
+            EnterEvent.create(1, sector_name, {"hours": 0, "minutes": 10, "seconds": 0}),
+            EnterEvent.create(2, sector_name, {"hours": 0, "minutes": 10, "seconds": 0}),
+        ],
+    )
+    model_output = AirTrafficFlowScheduler().run(input_, parameters, model_builder)
+    assert not model_output.is_feasible

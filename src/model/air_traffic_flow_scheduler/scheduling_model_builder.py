@@ -85,7 +85,9 @@ class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBui
         self.integer_var_delay = integer_var_dict(keys=input_.flights, min=0, max=parameters.max_delay, name="delay")
 
         # 各進入イベントにかかる時間
-        self.interval_var_event = interval_var_list(input_.num_enters, size=1, name="interval_event")
+        self.interval_var_event = interval_var_list(
+            input_.num_enters, size=parameters.interval_size, name="interval_event"
+        )
 
     def _add_constraints_all(
         self,
