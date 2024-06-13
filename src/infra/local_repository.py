@@ -23,11 +23,15 @@ class LocalRepository(IRepository):
 
     def read_sectors(self) -> list[Sector]:
         filename = self.config_path_and_filename.get("FILENAME_SECTORS")
-        results = read_instances_from_csv(self.get_path_data_raw(), filename, Sector, ["name"])
+        results = read_instances_from_csv(self.get_path_data_raw(), filename, Sector, ["sector_name"])
         return results
 
     def read_periods(self) -> list[Period]:
-        pass
+        filename = self.config_path_and_filename.get("FILENAME_PERIODS")
+        results = read_instances_from_csv(
+            self.get_path_data_raw(), filename, Period.create, "sector_name,start_time,end_time".split(",")
+        )
+        return results
 
     def read_enter_events(self) -> list[EnterEvent]:
         pass

@@ -14,14 +14,14 @@ input_ = AirTrafficFlowSchedulerInput(
     periods=[
         Period.create(
             sector_name,
-            {"hours": 0, "minutes": 0, "seconds": 0},
-            {"hours": 0, "minutes": 30, "seconds": 0},
+            "00:00:00",
+            "00:30:00",
             30,
         )
     ],
     enter_events=[
-        EnterEvent.create(1, sector_name, {"hours": 0, "minutes": 10, "seconds": 0}),
-        EnterEvent.create(2, sector_name, {"hours": 0, "minutes": 20, "seconds": 0}),
+        EnterEvent.create(1, sector_name, "00:10:00"),
+        EnterEvent.create(2, sector_name, "00:20:00"),
     ],
 )
 parameters = AirTrafficFlowSchedulerParameters()
@@ -56,14 +56,14 @@ def _test_output_infeasible_case():
         periods=[
             Period.create(
                 sector_name,
-                {"hours": 0, "minutes": 0, "seconds": 0},
-                {"hours": 0, "minutes": 10, "seconds": 0},
+                "00:00:00",
+                "00:10:00",
                 1,
             )
         ],
         enter_events=[
-            EnterEvent.create(1, sector_name, {"hours": 0, "minutes": 10, "seconds": 0}),
-            EnterEvent.create(2, sector_name, {"hours": 0, "minutes": 10, "seconds": 0}),
+            EnterEvent.create(1, sector_name, "00:10:00"),
+            EnterEvent.create(2, sector_name, "00:10:00"),
         ],
     )
     model_output = AirTrafficFlowScheduler().run(input_, parameters, model_builder)

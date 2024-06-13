@@ -17,3 +17,15 @@ def test_calculate_slot_number_by_time_step():
 def test_subtraction():
     """引き算ができるか"""
     assert Time(hours=1, minutes=1, seconds=0) - Time(hours=0, minutes=0, seconds=0) == 60 * 60 * 1 + 60 * 1
+
+
+def test_create():
+    """%H:%M:%S の文字列が与えられたときに正しく変換できるか"""
+    hours = "00"
+    minutes = "10"
+    seconds = "20"
+    test_obj = Time.create(f"{hours}:{minutes}:{seconds}")
+
+    assert test_obj.hours == int(hours)
+    assert test_obj.minutes == int(minutes)
+    assert test_obj.seconds == int(seconds)

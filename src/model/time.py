@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -38,3 +40,16 @@ class Time(BaseModel):
         dif_minutes = self.minutes - other.minutes
         dif_seconds = self.seconds - other.seconds
         return dif_hours * 60 * 60 + dif_minutes * 60 + dif_seconds
+
+    @classmethod
+    def create(cls, time_str: str) -> Time:
+        """文字列から変換する.
+
+        Args:
+            time_str (str): %H:%M:%S で表記された文字列
+
+        Returns:
+            Time: `time_str` を datetime 型に変換したのち, 時刻の情報を抜き出した型
+        """
+        time_datetime: datetime.time = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
+        return cls(hours=time_datetime.hour, minutes=time_datetime.minute, seconds=time_datetime.second)

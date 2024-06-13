@@ -13,12 +13,10 @@ class EnterEvent(BaseModel):
     expected_time_over: Time
 
     @classmethod
-    def create(
-        cls, flight_num: int, sector_name: str, expected_time_over: dict[str, int]
-    ) -> EnterEvent:
+    def create(cls, flight_num: int, sector_name: str, expected_time_over: str) -> EnterEvent:
         result = cls(
             flight=Flight(id_=flight_num),
             sector=Sector(name=sector_name),
-            expected_time_over=Time(**expected_time_over),
+            expected_time_over=Time.create(expected_time_over),
         )
         return result

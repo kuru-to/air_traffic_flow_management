@@ -7,7 +7,7 @@ def test_period_starts_before_end():
     with pytest.raises(ValueError):
         Period.create(
             "test_sector",
-            {"hours": 0, "minutes": 0, "seconds": 10},
-            {"hours": 0, "minutes": 0, "seconds": 0},
+            "00:00:10",
+            "00:00:00",
             10,
         )
