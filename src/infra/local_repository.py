@@ -23,7 +23,7 @@ class LocalRepository(IRepository):
 
     def read_sectors(self) -> list[Sector]:
         filename = self.config_path_and_filename.get("FILENAME_SECTORS")
-        results = read_instances_from_csv(self.get_path_data_raw(), filename, Sector, ["sector_name"])
+        results = read_instances_from_csv(self.get_path_data_raw(), filename, Sector, ["name"])
         return results
 
     def read_periods(self) -> list[Period]:
@@ -34,4 +34,8 @@ class LocalRepository(IRepository):
         return results
 
     def read_enter_events(self) -> list[EnterEvent]:
-        pass
+        filename = self.config_path_and_filename.get("FILENAME_ENTER_EVENTS")
+        results = read_instances_from_csv(
+            self.get_path_data_raw(), filename, EnterEvent.create, "flight,sector,eto".split(",")
+        )
+        return results

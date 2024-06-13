@@ -14,3 +14,9 @@ def test_read_periods():
     sectors = test_repository.read_periods()
 
     assert len(sectors) == 2
+
+
+def test_read_enter_events():
+    enter_events = test_repository.read_enter_events()
+
+    assert len(enter_events) == 2
