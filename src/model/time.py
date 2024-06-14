@@ -5,7 +5,7 @@ import datetime
 from pydantic import BaseModel, Field
 
 
-class Time(BaseModel):
+class Time(BaseModel, frozen=True):
     hours: int = Field(..., ge=0, le=60)
     minutes: int = Field(..., ge=0, le=60)
     seconds: int = Field(..., ge=0, le=60)
@@ -53,3 +53,7 @@ class Time(BaseModel):
         """
         time_datetime: datetime.time = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
         return cls(hours=time_datetime.hour, minutes=time_datetime.minute, seconds=time_datetime.second)
+
+    def __str__(self) -> str:
+        """%H:%M:%S の形式で文字列出力"""
+        return ":".join([str(self.hours).zfill(2), str(self.minutes).zfill(2), str(self.seconds).zfill(2)])
