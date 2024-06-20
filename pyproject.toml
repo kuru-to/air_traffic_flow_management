@@ -23,6 +23,7 @@ pytest-cov = "^4.1.0"
 pulp = "^2.8.0"
 black = "^24.4.2"
 isort = "^5.13.2"
+mypy = "^1.10.0"
 
 [tool.black]
 line-length = 119
