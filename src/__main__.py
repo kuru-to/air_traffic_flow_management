@@ -7,6 +7,7 @@ from .infra.cplex.scheduling_model_builder import (
     AirTrafficFlowSchedulingModelBuilderImpl,
 )
 from .infra.local_repository import LocalRepository
+from .logger.logger import setup_logger
 from .model.main_process import run_main_process
 from .utils.config_util import default_section
 
@@ -14,6 +15,8 @@ from .utils.config_util import default_section
 def main(config_section: str):
     repository = LocalRepository(config_section)
     scheduler = AirTrafficFlowScheduler(AirTrafficFlowSchedulingModelBuilderImpl())
+
+    setup_logger(__name__, path_log=repository.get_path_local_log())
 
     run_main_process(scheduler, repository)
 

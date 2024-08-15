@@ -107,3 +107,7 @@ nohup.out
 # class figures
 classes.png
 packages.png
+
+data/input/*
+data/output/*
+data/example/output/*

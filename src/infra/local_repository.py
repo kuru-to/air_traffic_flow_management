@@ -66,3 +66,6 @@ class LocalRepository(IRepository):
             self.get_path_data_result(), filename, AirTrafficFlow.create, AirTrafficFlow.to_header()
         )
         return results
+
+    def get_path_local_log(self):
+        return self.get_path("PATH_DATA").joinpath(self.get_path("PATH_LOG"))
