@@ -25,6 +25,7 @@ class AirTrafficFlowScheduler(IAirTrafficFlowScheduler):
         parameters: AirTrafficFlowSchedulerParameters,
     ) -> AirTrafficFlowSchedulerOutput:
         model = self.model_builder.build(input_, parameters)
+        # TODO: log の吐き出し先指定
         solution: CpoModelSolution = model.solve()
 
         if not solution.is_solution():

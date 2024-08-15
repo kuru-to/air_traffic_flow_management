@@ -75,7 +75,6 @@ class IAirTrafficFlowSchedulingModelBuilder(abc.ABC):
 
 class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBuilder):
     def reset_model(self):
-        # TODO: log の吐き出し先指定
         self.mdl = CpoModel("air traffic flow scheduler")
 
     def _set_dvars_all(
@@ -103,7 +102,7 @@ class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBui
                 pulse(self.interval_var_event[i], 1) for i, e in enumerate(input_.enter_events) if e.sector == s
             )
 
-        # 進入イベントの time step ごとの合計が容量率以内に収まる
+        # 進入イベントの time step ごとの合計が10分あたりの上限を切り上げた値以内に収まる
         for s in input_.sectors:
             for p in input_.periods_by_sector(s):
                 self.mdl.add_constraint(
@@ -127,6 +126,9 @@ class AirTrafficFlowSchedulingModelBuilderImpl(IAirTrafficFlowSchedulingModelBui
                     parameters.time_step,
                 ),
             )
+
+        for s in input_.sectors:
+            self.mdl.add_constraint(func_cum_by_sector[s] <= len(input_.flights))
 
     def _get_objective_function_delay(
         self,

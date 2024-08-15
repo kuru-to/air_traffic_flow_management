@@ -16,7 +16,7 @@ def main(config_section: str):
     repository = LocalRepository(config_section)
     scheduler = AirTrafficFlowScheduler(AirTrafficFlowSchedulingModelBuilderImpl())
 
-    setup_logger(__name__, path_log=repository.get_path_local_log())
+    setup_logger("main", path_log=repository.get_path_local_log())
 
     run_main_process(scheduler, repository)
 
