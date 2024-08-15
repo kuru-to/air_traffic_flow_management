@@ -3,13 +3,9 @@ import abc
 from .air_traffic_flow import AirTrafficFlow
 from .enter_event import EnterEvent
 from .period import Period
-from .sector import Sector
 
 
 class IRepository(abc.ABC):
-    @abc.abstractmethod
-    def read_sectors(self) -> list[Sector]:
-        pass
 
     @abc.abstractmethod
     def read_periods(self) -> list[Period]:

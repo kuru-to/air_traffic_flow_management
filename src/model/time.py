@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-import datetime
-
 from pydantic import BaseModel, Field
 
 
 class Time(BaseModel, frozen=True):
-    hours: int = Field(..., ge=0, le=60)
-    minutes: int = Field(..., ge=0, le=60)
-    seconds: int = Field(..., ge=0, le=60)
+    hours: int = Field(..., ge=0, le=23)
+    minutes: int = Field(..., ge=0, le=59)
+    seconds: int = Field(..., ge=0, le=59)
 
     @property
     def all_minutes(self) -> int:
@@ -36,23 +34,16 @@ class Time(BaseModel, frozen=True):
         return self.seconds < other.seconds
 
     def __sub__(self, other: Time) -> int:
+        """引き算し, 秒数で出力"""
         dif_hours = self.hours - other.hours
         dif_minutes = self.minutes - other.minutes
         dif_seconds = self.seconds - other.seconds
         return dif_hours * 60 * 60 + dif_minutes * 60 + dif_seconds
 
     @classmethod
-    def create(cls, time_str: str) -> Time:
-        """文字列から変換する.
-
-        Args:
-            time_str (str): %H:%M:%S で表記された文字列
-
-        Returns:
-            Time: `time_str` を datetime 型に変換したのち, 時刻の情報を抜き出した型
-        """
-        time_datetime: datetime.time = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
-        return cls(hours=time_datetime.hour, minutes=time_datetime.minute, seconds=time_datetime.second)
+    def create(cls, hour: int, minute: int, second: int) -> Time:
+        """3つの int から変換する."""
+        return cls(hours=hour, minutes=minute, seconds=second)
 
     def __str__(self) -> str:
         """%H:%M:%S の形式で文字列出力"""

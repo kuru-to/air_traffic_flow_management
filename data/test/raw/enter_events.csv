@@ -1,3 +1,3 @@
-flight,sector,eto
-1,uh,05:35:00
-2,uaus,05:44:00
+flight,sector,eto_hour,eto_minute,eto_second
+1,uh,5,35,0
+2,uaus,5,44,0

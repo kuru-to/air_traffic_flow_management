@@ -38,6 +38,7 @@ tuple Time {
 };
 
 // 1時間あたりの容量率. capacity rate はこの値で決まる
+// rate が1時間あたりの台数.
 tuple Period {
    Time start;
    Time end;
@@ -83,9 +84,11 @@ minimize totalDelay;
 constraints {
 
   // 容量率は10分間隔に修正される
-  // ex: 7:30-8:00 で rate 30 だった場合, interval変数 a によって各フライトの進入開始時刻が決まるので,
+  // ex: 7:30-8:00 で rate 30 だった場合, 10分間隔で5台まで入れられる.
+  // interval変数 a によって各フライトの進入開始時刻が決まるので,
   // pulse(a[en], 1) により 7:30-8:00 に進入するイベント数がわかる.
-  // そこから割合が30%以内になるようにする?
+  // rate が26 とか6で割り切れない値だと, 1時間あたりの台数上限 rate を少し over する可能性がこのモデルにはある.
+  // ex: 26台/hour = 4.33...台/10min であり, 上限に引っかからないようにするには10分あたり4台の制約. ただしこのモデルでは10分あたり5台の制約にしている
   forall (i in SectorNames)
       forall (p in periods[i])
          alwaysIn(r[i], (p.start.hours * 60 + p.start.minutes) div timeStep,

@@ -10,13 +10,13 @@
 // --------------------------------------------------------------------------
 
 
-SectorNames = {"aorc", "artc", "pv", "scmd", "smds", "tn", "tpth", "ua", "uaus", "ubdx", "ubdxv", "ufxf", "ugw", 
+SectorNames = {"aorc", "artc", "pv", "scmd", "smds", "tn", "tpth", "ua", "uaus", "ubdx", "ubdxv", "ufxf", "ugw",
                "ugwa", "uh", "uttu", "uttup"};
 
 nbOfFlights = 1991;
 nbOfEnters = 3783;
 
-e = [ 
+e = [
 	#<flight: 1, sector: "uh", eto: <05,35,00>>#,
 	#<flight: 2, sector: "uaus", eto: <05,44,00>>#,
 	#<flight: 2, sector: "uh", eto: <06,10,00>>#,
@@ -3807,7 +3807,7 @@ periods = #[
 	"aorc": { #<start: <19,00,00>, end: <20,30,00>, rate: 30># },
 	"artc": { #<start: <18,00,00>, end: <19,30,00>, rate: 30># },
 	"pv": { #<start: <07,00,00>, end: <21,00,00>, rate: 26># },
-	"scmd": { #<start: <17,40,00>, end: <23,30,00>, rate: 26># },	
+	"scmd": { #<start: <17,40,00>, end: <23,30,00>, rate: 26># },
 	"smds": { #<start: <21,00,00>, end: <23,59,00>, rate: 26># },
 	"tn": { #<start: <17,00,00>, end: <20,00,00>, rate: 25># },
 	"tpth": { #<start: <07,00,00>, end: <08,00,00>, rate: 25># },
@@ -3827,4 +3827,3 @@ periods = #[
 	"uttu": {	#<start: <09,00,00>, end: <11,00,00>, rate: 45># },
 	"uttup": { #<start: <05,00,00>, end: <20,00,00>, rate: 35># }
 ]#;
-

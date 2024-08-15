@@ -8,12 +8,6 @@ from src.utils.file_util import remove_files_and_dirs
 test_repository = LocalRepository(test_section)
 
 
-def test_read_sectors():
-    sectors = test_repository.read_sectors()
-
-    assert len(sectors) == 2
-
-
 def test_read_periods():
     sectors = test_repository.read_periods()
 
@@ -34,7 +28,7 @@ def test_write_air_traffic_flows():
     )
     remove_files_and_dirs([sol_path])
 
-    sol_objs = [AirTrafficFlow.create(1, "test_sector", "00:00:00")]
+    sol_objs = [AirTrafficFlow.create(1, "test_sector", 0, 0, 0)]
     test_repository.write_air_traffic_flows(sol_objs)
 
     assert os.path.exists(sol_path)

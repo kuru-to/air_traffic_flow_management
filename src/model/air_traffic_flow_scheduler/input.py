@@ -15,11 +15,11 @@ class AirTrafficFlowSchedulerInput(BaseModel):
     def validate_existing_sector(self):
         for p in self.periods:
             if p.sector not in set(self.sectors):
-                raise ValueError(f"Period's sector({p.sector}) does not exist in sectors.")
+                raise ValueError(f"Period's sector({p.sector}) does not exist in sectors: {self.sectors}.")
 
         for e in self.enter_events:
             if e.sector not in set(self.sectors):
-                raise ValueError(f"EnterEvent's sector({p.sector}) does not exist in sectors.")
+                raise ValueError(f"EnterEvent's sector({p.sector}) does not exist in sectors: {self.sectors}.")
 
         return self
 

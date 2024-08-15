@@ -22,14 +22,18 @@ class Period(BaseModel):
     def create(
         cls,
         sector_name: str,
-        start_time: str,
-        end_time: str,
+        start_hour: int,
+        start_minute: int,
+        start_second: int,
+        end_hour: int,
+        end_minute: int,
+        end_second: int,
         rate: int,
     ) -> Period:
         result = cls(
             sector=Sector(name=sector_name),
-            start=Time.create(start_time),
-            end=Time.create(end_time),
+            start=Time.create(start_hour, start_minute, start_second),
+            end=Time.create(end_hour, end_minute, end_second),
             rate=rate,
         )
         return result

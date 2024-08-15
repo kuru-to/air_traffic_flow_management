@@ -1,2 +1,2 @@
-flight,sector,enter_time
-1,test_sector,00:00:00
+flight,sector,enter_hour,enter_minute,enter_second
+1,test_sector,0,0,0
