@@ -2,6 +2,9 @@ import configparser
 from pathlib import Path
 
 from ..model.air_traffic_flow import AirTrafficFlow
+from ..model.air_traffic_flow_scheduler.parameters import (
+    AirTrafficFlowSchedulerParameters,
+)
 from ..model.enter_event import EnterEvent
 from ..model.period import Period
 from ..model.repository import IRepository
@@ -40,6 +43,10 @@ class LocalRepository(IRepository):
             "flight,sector,eto_hour,eto_minute,eto_second".split(","),
         )
         return results
+
+    def read_parameters(self) -> AirTrafficFlowSchedulerParameters:
+        """特に現在ファイルに起こしていないのでデフォルト値を出力"""
+        return AirTrafficFlowSchedulerParameters()
 
     def get_path_data_result(self) -> Path:
         return self.get_path("PATH_DATA").joinpath(self.get_path("PATH_RESULT"))

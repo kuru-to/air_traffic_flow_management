@@ -1,12 +1,12 @@
 import pytest
 
+from src.infra.cplex.scheduler import AirTrafficFlowScheduler
+from src.infra.cplex.scheduling_model_builder import (
+    AirTrafficFlowSchedulingModelBuilderImpl,
+)
 from src.model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
 from src.model.air_traffic_flow_scheduler.parameters import (
     AirTrafficFlowSchedulerParameters,
-)
-from src.model.air_traffic_flow_scheduler.scheduler import AirTrafficFlowScheduler
-from src.model.air_traffic_flow_scheduler.scheduling_model_builder import (
-    AirTrafficFlowSchedulingModelBuilderImpl,
 )
 from src.model.enter_event import EnterEvent
 from src.model.period import Period
@@ -53,5 +53,5 @@ def test_optimize():
 
 @pytest.mark.local_cplex
 def test_scheduler_run():
-    model_output = AirTrafficFlowScheduler().run(input_, parameters, model_builder)
+    model_output = AirTrafficFlowScheduler(model_builder).run(input_, parameters)
     assert model_output.total_delay == 0

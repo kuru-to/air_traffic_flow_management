@@ -4,9 +4,11 @@ from docplex.cp.expression import CpoExpr
 from docplex.cp.model import CpoModel, integer_var_dict, interval_var_list, sum
 from docplex.cp.modeler import always_in, int_div, pulse, start_of
 
-from ..sector import Sector
-from .input import AirTrafficFlowSchedulerInput
-from .parameters import AirTrafficFlowSchedulerParameters
+from ...model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
+from ...model.air_traffic_flow_scheduler.parameters import (
+    AirTrafficFlowSchedulerParameters,
+)
+from ...model.sector import Sector
 
 
 class IAirTrafficFlowSchedulingModelBuilder(abc.ABC):

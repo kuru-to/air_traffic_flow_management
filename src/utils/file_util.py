@@ -8,6 +8,8 @@ from csv import DictReader, DictWriter
 from pathlib import Path
 from typing import Any, Callable, TypeVar
 
+from pydantic import ValidationError
+
 T = TypeVar("T")
 
 
@@ -58,7 +60,11 @@ def read_instances_from_csv(
         for i, row in enumerate(reader):
             line_no = i + 2
 
-            obj = create_method(**row)
+            try:
+                obj = create_method(**row)
+            except ValidationError as e:
+                print(line_no)
+                raise e
             results.append(obj)
 
             # 主キー確認. もし主キーがなければ省略
