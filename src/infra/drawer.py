@@ -3,9 +3,15 @@ import pandas as pd
 import seaborn as sns
 
 from ..model.air_traffic_flow_scheduler.output import AirTrafficFlowSchedulerOutput
+from .path_filename_generator import PathFilenameGenerator
 
 
 class Drawer:
+    path_filename_generator: PathFilenameGenerator
+
+    def __init__(self, path_filename_generator: PathFilenameGenerator):
+        self.path_filename_generator = path_filename_generator
+
     def draw_num_flights_by_period(self, model_output: AirTrafficFlowSchedulerOutput):
         periods = model_output.input_.periods
 
@@ -24,6 +30,8 @@ class Drawer:
 
         df = pd.concat([df_num_flows, df_upper])
         sns.barplot(data=df, x="num", y="index", hue="type")
-        # TODO: べた書きのディレクトリをなんとかする
         # TODO: 軸がちゃんと見えない
-        plt.savefig("./data/example/output/num_flows_and_upper.png")
+        path_result = self.path_filename_generator.generate_path_data_result()
+        plt.savefig(
+            path_result.joinpath(self.path_filename_generator.generate_filename("FILENAME_PNG_NUM_FLOWS_AND_UPPER"))
+        )

@@ -4,7 +4,7 @@ from src.infra.cplex.scheduler import AirTrafficFlowScheduler
 from src.infra.cplex.scheduling_model_builder import (
     AirTrafficFlowSchedulingModelBuilderImpl,
 )
-from src.infra.local_repository import LocalRepository
+from src.infra.path_filename_generator import PathFilenameGenerator
 from src.model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
 from src.model.air_traffic_flow_scheduler.parameters import (
     AirTrafficFlowSchedulerParameters,
@@ -55,5 +55,5 @@ def test_optimize():
 
 @pytest.mark.local_cplex
 def test_scheduler_run():
-    model_output = AirTrafficFlowScheduler(model_builder, LocalRepository(test_section)).run(input_, parameters)
+    model_output = AirTrafficFlowScheduler(model_builder, PathFilenameGenerator(test_section)).run(input_, parameters)
     assert model_output.total_delay == 0

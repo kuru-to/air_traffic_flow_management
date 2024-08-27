@@ -1,11 +1,12 @@
 import os
 
 from src.infra.local_repository import LocalRepository
+from src.infra.path_filename_generator import PathFilenameGenerator
 from src.model.air_traffic_flow import AirTrafficFlow
 from src.utils.config_util import read_config, test_section
 from src.utils.file_util import remove_files_and_dirs
 
-test_repository = LocalRepository(test_section)
+test_repository = LocalRepository(PathFilenameGenerator(test_section))
 
 
 def test_read_periods():

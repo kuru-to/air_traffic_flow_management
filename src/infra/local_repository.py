@@ -1,4 +1,3 @@
-import configparser
 from pathlib import Path
 
 from ..model.air_traffic_flow import AirTrafficFlow
@@ -8,24 +7,21 @@ from ..model.air_traffic_flow_scheduler.parameters import (
 from ..model.enter_event import EnterEvent
 from ..model.period import Period
 from ..model.repository import IRepository
-from ..utils.config_util import default_section, read_config
 from ..utils.file_util import read_instances_from_csv, write_instances_to_csv
+from .path_filename_generator import PathFilenameGenerator
 
 
 class LocalRepository(IRepository):
-    config_path_and_filename: configparser.SectionProxy
+    path_filename_generator: PathFilenameGenerator
 
-    def __init__(self, config_section: str = default_section):
-        self.config_path_and_filename = read_config(section=config_section)
-
-    def get_path(self, key=str) -> Path:
-        return Path(self.config_path_and_filename.get(key))
+    def __init__(self, path_filename_generator: PathFilenameGenerator):
+        self.path_filename_generator = path_filename_generator
 
     def get_path_data_raw(self) -> Path:
-        return self.get_path("PATH_DATA").joinpath(self.get_path("PATH_RAW"))
+        return self.path_filename_generator.generate_path_data_raw()
 
     def read_periods(self) -> list[Period]:
-        filename = self.config_path_and_filename.get("FILENAME_PERIODS")
+        filename = self.path_filename_generator.generate_filename("FILENAME_PERIODS")
         results = read_instances_from_csv(
             self.get_path_data_raw(),
             filename,
@@ -35,7 +31,7 @@ class LocalRepository(IRepository):
         return results
 
     def read_enter_events(self) -> list[EnterEvent]:
-        filename = self.config_path_and_filename.get("FILENAME_ENTER_EVENTS")
+        filename = self.path_filename_generator.generate_filename("FILENAME_ENTER_EVENTS")
         results = read_instances_from_csv(
             self.get_path_data_raw(),
             filename,
@@ -49,10 +45,10 @@ class LocalRepository(IRepository):
         return AirTrafficFlowSchedulerParameters()
 
     def get_path_data_result(self) -> Path:
-        return self.get_path("PATH_DATA").joinpath(self.get_path("PATH_RESULT"))
+        return self.path_filename_generator.generate_path_data_result()
 
     def write_air_traffic_flows(self, air_traffic_flows: list[AirTrafficFlow]):
-        filename = self.config_path_and_filename.get("FILENAME_AIR_TRAFFIC_FLOWS")
+        filename = self.path_filename_generator.generate_filename("FILENAME_AIR_TRAFFIC_FLOWS")
         write_instances_to_csv(
             self.get_path_data_result(),
             filename,
@@ -61,11 +57,11 @@ class LocalRepository(IRepository):
         )
 
     def read_air_traffic_flows(self) -> list[AirTrafficFlow]:
-        filename = self.config_path_and_filename.get("FILENAME_AIR_TRAFFIC_FLOWS")
+        filename = self.path_filename_generator.generate_filename("FILENAME_AIR_TRAFFIC_FLOWS")
         results = read_instances_from_csv(
             self.get_path_data_result(), filename, AirTrafficFlow.create, AirTrafficFlow.to_header()
         )
         return results
 
     def get_path_local_log(self) -> Path:
-        return self.get_path("PATH_DATA").joinpath(self.get_path("PATH_LOG"))
+        return self.path_filename_generator.generate_path_local_log()

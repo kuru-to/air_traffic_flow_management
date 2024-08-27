@@ -11,8 +11,8 @@ from ...model.air_traffic_flow_scheduler.parameters import (
     AirTrafficFlowSchedulerParameters,
 )
 from ...model.air_traffic_flow_scheduler.scheduler import IAirTrafficFlowScheduler
-from ...model.repository import IRepository
 from ...model.time import Time
+from ..path_filename_generator import PathFilenameGenerator
 from .scheduling_model_builder import IAirTrafficFlowSchedulingModelBuilder
 
 
@@ -20,17 +20,19 @@ class AirTrafficFlowScheduler(IAirTrafficFlowScheduler):
     """Air traffic flow についてスケジューリングを行う"""
 
     model_builder: IAirTrafficFlowSchedulingModelBuilder
-    repository: IRepository
+    path_filename_generator: PathFilenameGenerator
 
-    def __init__(self, model_builder: IAirTrafficFlowSchedulingModelBuilder, repository: IRepository):
+    def __init__(
+        self, model_builder: IAirTrafficFlowSchedulingModelBuilder, path_filename_generator: PathFilenameGenerator
+    ):
         self.model_builder = model_builder
-        self.repository = repository
+        self.path_filename_generator = path_filename_generator
 
     @contextlib.contextmanager
     def open_cplex_logger(self):
         prefix = datetime.now().strftime("%Y%m%d_%H%M%S")
         cplex_log_filename: str = f"{prefix}_cplex.log"
-        log_path = self.repository.get_path_local_log().joinpath(cplex_log_filename)
+        log_path = self.path_filename_generator.generate_path_local_log().joinpath(cplex_log_filename)
 
         fp = open(log_path, "w")
         try:

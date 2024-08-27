@@ -5,7 +5,7 @@ from ..model.air_traffic_flow_scheduler.scheduler import IAirTrafficFlowSchedule
 from ..model.repository import IRepository
 
 
-def run_main_process(scheduler: IAirTrafficFlowScheduler, repository: IRepository):
+def run_main_process(scheduler: IAirTrafficFlowScheduler, repository: IRepository, drawer: Drawer):
     """ファイルを読み込み, scheduler に結果を出力させ, ファイルへ出力する"""
     logger = get_main_logger()
 
@@ -23,7 +23,6 @@ def run_main_process(scheduler: IAirTrafficFlowScheduler, repository: IRepositor
     logger.info("End scheduling.")
 
     logger.info("Start writing results...")
-    drawer = Drawer()
     drawer.draw_num_flights_by_period(output)
     repository.write_air_traffic_flows(output.air_traffic_flows)
     logger.info("End writing results.")
