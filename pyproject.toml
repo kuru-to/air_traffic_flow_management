@@ -15,6 +15,7 @@ python = ">=3.10, <3.11"
 julia = "^0.6.2"
 pydantic = "^2.6.4"
 docplex = "^2.25.236"
+seaborn = "^0.13.2"
 
 
 [tool.poetry.group.dev.dependencies]

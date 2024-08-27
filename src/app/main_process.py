@@ -1,7 +1,7 @@
 from ..logger.logger import get_main_logger
-from .air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
-from .air_traffic_flow_scheduler.scheduler import IAirTrafficFlowScheduler
-from .repository import IRepository
+from ..model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
+from ..model.air_traffic_flow_scheduler.scheduler import IAirTrafficFlowScheduler
+from ..model.repository import IRepository
 
 
 def run_main_process(scheduler: IAirTrafficFlowScheduler, repository: IRepository):

@@ -2,13 +2,13 @@
 
 import argparse
 
+from .app.main_process import run_main_process
 from .infra.cplex.scheduler import AirTrafficFlowScheduler
 from .infra.cplex.scheduling_model_builder import (
     AirTrafficFlowSchedulingModelBuilderImpl,
 )
 from .infra.local_repository import LocalRepository
 from .logger.logger import setup_logger
-from .model.main_process import run_main_process
 from .utils.config_util import default_section
 
 

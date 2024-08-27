@@ -33,6 +33,16 @@ class Time(BaseModel, frozen=True):
 
         return self.seconds < other.seconds
 
+    def __eq__(self, other: Time) -> bool:
+        if self.hours != other.hours:
+            return False
+        if self.minutes != other.minutes:
+            return False
+        return self.seconds == other.seconds
+
+    def __le__(self, other: Time) -> bool:
+        return self < other or self == other
+
     def __sub__(self, other: Time) -> int:
         """引き算し, 秒数で出力"""
         dif_hours = self.hours - other.hours

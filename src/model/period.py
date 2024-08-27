@@ -37,3 +37,7 @@ class Period(BaseModel):
             rate=rate,
         )
         return result
+
+    def in_period(self, time_: Time) -> bool:
+        """period の期間内に入っているか"""
+        return self.start <= time_ and time_ <= self.end
