@@ -14,7 +14,7 @@ from .utils.config_util import default_section
 
 def main(config_section: str):
     repository = LocalRepository(config_section)
-    scheduler = AirTrafficFlowScheduler(AirTrafficFlowSchedulingModelBuilderImpl())
+    scheduler = AirTrafficFlowScheduler(AirTrafficFlowSchedulingModelBuilderImpl(), repository)
 
     setup_logger("main", path_log=repository.get_path_local_log())
 

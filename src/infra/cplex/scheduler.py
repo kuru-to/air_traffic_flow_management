@@ -1,3 +1,7 @@
+import contextlib
+from datetime import datetime
+
+from docplex.cp.config import context
 from docplex.cp.solution import CpoModelSolution
 
 from ...model.air_traffic_flow import AirTrafficFlow
@@ -7,6 +11,7 @@ from ...model.air_traffic_flow_scheduler.parameters import (
     AirTrafficFlowSchedulerParameters,
 )
 from ...model.air_traffic_flow_scheduler.scheduler import IAirTrafficFlowScheduler
+from ...model.repository import IRepository
 from ...model.time import Time
 from .scheduling_model_builder import IAirTrafficFlowSchedulingModelBuilder
 
@@ -15,9 +20,23 @@ class AirTrafficFlowScheduler(IAirTrafficFlowScheduler):
     """Air traffic flow についてスケジューリングを行う"""
 
     model_builder: IAirTrafficFlowSchedulingModelBuilder
+    repository: IRepository
 
-    def __init__(self, model_builder: IAirTrafficFlowSchedulingModelBuilder):
+    def __init__(self, model_builder: IAirTrafficFlowSchedulingModelBuilder, repository: IRepository):
         self.model_builder = model_builder
+        self.repository = repository
+
+    @contextlib.contextmanager
+    def open_cplex_logger(self):
+        prefix = datetime.now().strftime("%Y%m%d_%H%M%S")
+        cplex_log_filename: str = f"{prefix}_cplex.log"
+        log_path = self.repository.get_path_local_log().joinpath(cplex_log_filename)
+
+        fp = open(log_path, "w")
+        try:
+            yield fp
+        finally:
+            fp.close()
 
     def run(
         self,
@@ -25,8 +44,9 @@ class AirTrafficFlowScheduler(IAirTrafficFlowScheduler):
         parameters: AirTrafficFlowSchedulerParameters,
     ) -> AirTrafficFlowSchedulerOutput:
         model = self.model_builder.build(input_, parameters)
-        # TODO: log の吐き出し先指定
-        solution: CpoModelSolution = model.solve()
+        with self.open_cplex_logger() as f:
+            context.log_output = f
+            solution: CpoModelSolution = model.solve()
 
         if not solution.is_solution():
             return self.create_empty_output(input_)

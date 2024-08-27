@@ -4,6 +4,7 @@ from src.infra.cplex.scheduler import AirTrafficFlowScheduler
 from src.infra.cplex.scheduling_model_builder import (
     AirTrafficFlowSchedulingModelBuilderImpl,
 )
+from src.infra.local_repository import LocalRepository
 from src.model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
 from src.model.air_traffic_flow_scheduler.parameters import (
     AirTrafficFlowSchedulerParameters,
@@ -11,6 +12,7 @@ from src.model.air_traffic_flow_scheduler.parameters import (
 from src.model.enter_event import EnterEvent
 from src.model.period import Period
 from src.model.sector import Sector
+from src.utils.config_util import test_section
 
 sector_name = "test_sector"
 input_ = AirTrafficFlowSchedulerInput(
@@ -53,5 +55,5 @@ def test_optimize():
 
 @pytest.mark.local_cplex
 def test_scheduler_run():
-    model_output = AirTrafficFlowScheduler(model_builder).run(input_, parameters)
+    model_output = AirTrafficFlowScheduler(model_builder, LocalRepository(test_section)).run(input_, parameters)
     assert model_output.total_delay == 0

@@ -65,11 +65,14 @@ class IAirTrafficFlowSchedulingModelBuilder(abc.ABC):
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
-    ):
+    ) -> CpoModel:
         self.reset_model()
         self.setup_vars(input_, parameters)
         self.setup_constraints(input_, parameters)
         self.setup_objective(input_, parameters)
+
+        # parameter の設定
+        self.mdl.set_parameters({"FailLimit": parameters.cplex_faillimit})
         return self.mdl
 
 

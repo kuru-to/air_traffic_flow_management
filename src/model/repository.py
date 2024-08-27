@@ -1,4 +1,5 @@
 import abc
+from pathlib import Path
 
 from .air_traffic_flow import AirTrafficFlow
 from .air_traffic_flow_scheduler.parameters import AirTrafficFlowSchedulerParameters
@@ -22,4 +23,8 @@ class IRepository(abc.ABC):
 
     @abc.abstractmethod
     def write_air_traffic_flows(self, air_traffic_flows: list[AirTrafficFlow]):
+        pass
+
+    @abc.abstractmethod
+    def get_path_local_log(self) -> Path:
         pass

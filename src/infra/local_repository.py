@@ -67,5 +67,5 @@ class LocalRepository(IRepository):
         )
         return results
 
-    def get_path_local_log(self):
+    def get_path_local_log(self) -> Path:
         return self.get_path("PATH_DATA").joinpath(self.get_path("PATH_LOG"))
