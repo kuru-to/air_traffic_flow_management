@@ -1,3 +1,4 @@
+from ..infra.drawer import Drawer
 from ..logger.logger import get_main_logger
 from ..model.air_traffic_flow_scheduler.input import AirTrafficFlowSchedulerInput
 from ..model.air_traffic_flow_scheduler.scheduler import IAirTrafficFlowScheduler
@@ -22,5 +23,7 @@ def run_main_process(scheduler: IAirTrafficFlowScheduler, repository: IRepositor
     logger.info("End scheduling.")
 
     logger.info("Start writing results...")
+    drawer = Drawer()
+    drawer.draw_num_flights_by_period(output)
     repository.write_air_traffic_flows(output.air_traffic_flows)
     logger.info("End writing results.")

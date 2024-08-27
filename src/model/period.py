@@ -6,7 +6,7 @@ from .sector import Sector
 from .time import Time
 
 
-class Period(BaseModel):
+class Period(BaseModel, frozen=True):
     sector: Sector
     start: Time
     end: Time
@@ -38,6 +38,12 @@ class Period(BaseModel):
         )
         return result
 
-    def in_period(self, time_: Time) -> bool:
+    def is_in_period(self, time_: Time) -> bool:
         """period の期間内に入っているか"""
         return self.start <= time_ and time_ <= self.end
+
+    @property
+    def upper_flights_by_hour(self) -> int:
+        """1時間当たりの上限フライト割合から, 期間全体での上限フライト数の算出"""
+        interval_seconds = self.end - self.start
+        return interval_seconds / (60 * 60) * self.rate
