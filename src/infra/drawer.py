@@ -3,7 +3,9 @@ import pandas as pd
 import seaborn as sns
 
 from ..logger.logger import get_main_logger
-from ..model.air_traffic_flow_scheduler.output import AirTrafficFlowSchedulerOutput
+from ..model.air_traffic_flow import AirTrafficFlow
+from ..model.enter_event import EnterEvent
+from ..model.period import Period
 from .path_filename_generator import PathFilenameGenerator
 
 logger = get_main_logger()
@@ -30,13 +32,11 @@ class Drawer:
         self.path_filename_generator = path_filename_generator
 
     @deco_logging("drawing num flights by period")
-    def draw_num_flights_by_period(self, model_output: AirTrafficFlowSchedulerOutput):
+    def draw_num_flights_by_period(self, air_traffic_flows: list[AirTrafficFlow], periods: list[Period]):
         """各 period ごとの flight 数と, rate から算出される period の上限フライト数を棒グラフ描画"""
-        periods = model_output.input_.periods
-
         num_flows_by_period = {
             f"{p.sector}_{p.start}-{p.end}": len(
-                [a for a in model_output.air_traffic_flows if p.sector == a.sector and p.is_in_period(a.enter_time)]
+                [a for a in air_traffic_flows if p.sector == a.sector and p.is_in_period(a.enter_time)]
             )
             for p in periods
         }
@@ -56,11 +56,9 @@ class Drawer:
         )
 
     @deco_logging("drawing delay histogram")
-    def draw_delay_histogram(self, model_output: AirTrafficFlowSchedulerOutput):
+    def draw_delay_histogram(self, air_traffic_flows: list[AirTrafficFlow], enter_events: list[EnterEvent]):
         """各 enter_event の遅延分数をヒストグラムで描画"""
-        delays = [
-            sum(a.delay(e) // 60 for a in model_output.air_traffic_flows) for e in model_output.input_.enter_events
-        ]
+        delays = [sum(a.delay(e) // 60 for a in air_traffic_flows) for e in enter_events]
 
         fig, ax = plt.subplots(1, 1, dpi=300)
         ax = sns.histplot(
@@ -74,6 +72,6 @@ class Drawer:
             path_result.joinpath(self.path_filename_generator.generate_filename("FILENAME_PNG_DELAY_HISTOGRAM"))
         )
 
-    def run(self, model_output: AirTrafficFlowSchedulerOutput):
-        self.draw_num_flights_by_period(model_output)
-        self.draw_delay_histogram(model_output)
+    def run(self, air_traffic_flows: list[AirTrafficFlow], periods: list[Period], enter_events: list[EnterEvent]):
+        self.draw_num_flights_by_period(air_traffic_flows, periods)
+        self.draw_delay_histogram(air_traffic_flows, enter_events)
