@@ -23,6 +23,6 @@ def run_main_process(scheduler: IAirTrafficFlowScheduler, repository: IRepositor
     logger.info("End scheduling.")
 
     logger.info("Start writing results...")
-    drawer.draw_num_flights_by_period(output)
+    drawer.run(output)
     repository.write_air_traffic_flows(output.air_traffic_flows)
     logger.info("End writing results.")
