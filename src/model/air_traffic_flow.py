@@ -41,7 +41,9 @@ class AirTrafficFlow(BaseModel):
         return self.enter_time.seconds
 
     def delay(self, enter_event: EnterEvent) -> int:
-        """対応する進入イベントに対し, どれだけ遅れが生じたか"""
+        """対応する進入イベントに対し, どれだけ遅れが生じたか
+        単位: 秒
+        """
         if self.flight != enter_event.flight or self.sector != enter_event.sector:
             return 0
         return max(0, self.enter_time - enter_event.expected_time_over)

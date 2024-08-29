@@ -64,4 +64,6 @@ class AirTrafficFlowScheduler(IAirTrafficFlowScheduler):
                 AirTrafficFlow(flight=enter_event.flight, sector=enter_event.sector, enter_time=enter_time)
             )
 
-        return AirTrafficFlowSchedulerOutput(input_=input_, is_feasible=True, air_traffic_flows=air_traffic_flows)
+        result = AirTrafficFlowSchedulerOutput(input_=input_, is_feasible=True, air_traffic_flows=air_traffic_flows)
+        self.log_journey_by_flight(result)
+        return result
