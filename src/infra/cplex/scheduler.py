@@ -40,7 +40,7 @@ class AirTrafficFlowScheduler(IAirTrafficFlowScheduler):
         finally:
             fp.close()
 
-    def run(
+    def solve(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
@@ -65,5 +65,4 @@ class AirTrafficFlowScheduler(IAirTrafficFlowScheduler):
             )
 
         result = AirTrafficFlowSchedulerOutput(input_=input_, is_feasible=True, air_traffic_flows=air_traffic_flows)
-        self.log_journey_by_flight(result)
         return result

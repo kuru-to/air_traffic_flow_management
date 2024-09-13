@@ -15,7 +15,17 @@ class IAirTrafficFlowScheduler(abc.ABC):
     def create_empty_output(self, input_: AirTrafficFlowSchedulerInput) -> AirTrafficFlowSchedulerOutput:
         return AirTrafficFlowSchedulerOutput(input_=input_, is_feasible=False, air_traffic_flows=[])
 
-    def log_journey_by_flight(self, output: AirTrafficFlowSchedulerOutput):
+    def _log_input_information(self, input_: AirTrafficFlowSchedulerInput):
+        """input に関する情報を logging
+
+        Args:
+            input_ (AirTrafficFlowSchedulerInput): 入力データ
+        """
+        logger.info("logging input information.")
+        logger.info(f"num sectors: {input_.num_sectors}")
+        logger.info(f"num enters: {input_.num_enters}")
+
+    def _log_journey_by_flight(self, output: AirTrafficFlowSchedulerOutput):
         """各フライトでどのような旅路をたどったのかを logging
 
         Args:
@@ -28,7 +38,7 @@ class IAirTrafficFlowScheduler(abc.ABC):
             )
             for a in air_traffic_flow_by_flight:
                 enter_event = [e for e in output.input_.enter_events if e.flight == f and e.sector == a.sector][0]
-                logger.info(
+                logger.debug(
                     f"{indent}enter {a.sector}, time: {a.enter_time}, expected_time_over: {enter_event.expected_time_over}"
                 )
 
@@ -37,9 +47,23 @@ class IAirTrafficFlowScheduler(abc.ABC):
                     logger.info(f"{indent*2}delay occured! delay minutes: {delay_seconds // 60}")
 
     @abc.abstractmethod
-    def run(
+    def solve(
         self,
         input_: AirTrafficFlowSchedulerInput,
         parameters: AirTrafficFlowSchedulerParameters,
     ) -> AirTrafficFlowSchedulerOutput:
         pass
+
+    def run(
+        self,
+        input_: AirTrafficFlowSchedulerInput,
+        parameters: AirTrafficFlowSchedulerParameters,
+    ) -> AirTrafficFlowSchedulerOutput:
+        self._log_input_information(input_)
+
+        logger.info("Start solving...")
+        result = self.solve(input_, parameters)
+        logger.info("End solving.")
+
+        self._log_journey_by_flight(result)
+        return result

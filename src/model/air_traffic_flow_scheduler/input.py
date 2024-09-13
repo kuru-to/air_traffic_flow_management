@@ -24,6 +24,10 @@ class AirTrafficFlowSchedulerInput(BaseModel):
         return self
 
     @property
+    def num_sectors(self) -> int:
+        return len(self.sectors)
+
+    @property
     def num_enters(self) -> int:
         return len(self.enter_events)
 
